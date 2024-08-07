@@ -26,7 +26,7 @@
     </header>
     <main class="pt-16 flex items-center justify-center min-h-screen">
       <section
-        class="bg-cyan-900 w-full md:w-1/4 p-6 rounded-lg m-6 md:m-6 flex flex-col hover:scale-110 ease-in duration-0 shadow-3xl hover:shadow-cyan-950 outline outline-gray-400"
+        class="bg-cyan-900 w-full md:w-1/4 p-6 rounded-lg m-6 md:m-10 flex flex-col hover:scale-110 ease-in duration-0 shadow-3xl hover:shadow-cyan-950 outline outline-gray-400"
       >
         <form action="">
           <label for="name" class="text-white font-bold"
@@ -34,11 +34,11 @@
           >
           <input
             type="text"
-            id="name"
+            id="city_name"
             placeholder="E.g., Kolkata, Mumbai, Delhi"
             class="mb-3 w-full p-1 rounded-md focus:outline-none focus:ring-2 ring-cyan-500 ring-inset hover:scale-105 ease-in duration-100 shadow-b hover:shadow-slate-200"
           />
-          <button
+          <button id="search" type="submit"
             class="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-gray-500 hover:to-stone-400 text-white font-bold w-full p-1 rounded-md mb-3 hover:scale-105 ease-in duration-100 shadow-b hover:shadow-slate-200"
           >
             Search
@@ -55,7 +55,7 @@
           </button>
         </form>
       </section>
-      <section></section>
+      <section id="weather_display"></section>
     </main>
     <script src="index.js"></script>
   </body>
