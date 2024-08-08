@@ -11,8 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.getElementById("search").addEventListener("click", (event) => {
   event.preventDefault();
-  const cityName = document.getElementById("city_name").value;
-  fetchWeatherData(cityName);
+  const cityName = document.getElementById("city_name").value.trim();
+  if (cityName) {
+    fetchWeatherData(cityName);
+  } else {
+    displayError("Please enter a city name.");
+  }
 });
 
 document.getElementById("current").addEventListener("click", (event) => {
@@ -25,12 +29,12 @@ document.getElementById("current").addEventListener("click", (event) => {
         fetchWeatherData(currentLocation);
       },
       (error) => {
-        alert("Unable to retrieve your location");
+        displayError("Unable to retrieve your location.");
         console.error(error);
       }
     );
   } else {
-    alert("Geolocation is not supported by your browser");
+    displayError("Geolocation is not supported by your browser.");
   }
 });
 
@@ -39,15 +43,26 @@ async function fetchWeatherData(location) {
     const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=ea25262c8e5c4fefb9e72708240708&q=${location}&days=6`);
     
     if (!response.ok) {
-      throw new Error(`Error: ${response.status} ${response.statusText}`);
+      if (response.status === 404) {
+        throw new Error("City not found. Please check the city name and try again.");
+      } else if (response.status === 401) {
+        throw new Error("Unauthorized request. Please check your API key.");
+      } else {
+        throw new Error(`Server error: ${response.status} ${response.statusText}. Please try again later.`);
+      }
     }
 
     const forecastData = await response.json();
+    if (!forecastData || !forecastData.location || !forecastData.current) {
+      throw new Error("Invalid data received from the server.");
+    }
+
     displayData(forecastData);
     localStorage.setItem("lastCity", location);
     localStorage.setItem("forecastData", JSON.stringify(forecastData));
 
   } catch (error) {
+    displayError(`Error fetching weather data: ${error.message}`);
     console.error(`Error in fetching data: ${error}`);
   }
 }
@@ -85,5 +100,13 @@ function displayData(forecastData) {
             </div>`;
         }).join('')}
       </div>
+    </div>`;
+}
+
+function displayError(errorMessage) {
+  const display = document.getElementById("weather_display");
+  display.innerHTML = `
+    <div class="bg-red-500 p-4 rounded-lg m-6 md:m-10 text-white text-center">
+      <p class="font-bold">${errorMessage}</p>
     </div>`;
 }
