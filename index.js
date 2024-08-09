@@ -1,16 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Elements for theme toggling
   const themeToggleButton = document.getElementById("theme-toggle");
   const themeIcon = document.getElementById("theme-icon");
 
-  // Check if dark mode is enabled
+  // Check if dark mode is already enabled based on local storage
   if (localStorage.getItem("theme") === "dark") {
     document.documentElement.classList.add("dark");
     themeIcon.classList.replace("fa-moon", "fa-sun");
   }
 
+  // Event listener for toggling theme
   themeToggleButton.addEventListener("click", () => {
     document.documentElement.classList.toggle("dark");
 
+    // Update local storage and change the theme icon
     if (document.documentElement.classList.contains("dark")) {
       localStorage.setItem("theme", "dark");
       themeIcon.classList.replace("fa-moon", "fa-sun");
@@ -20,22 +23,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Existing code for weather functionality
+  // Load the last searched cities and forecast data from local storage
   const lastCities = JSON.parse(localStorage.getItem("lastCities")) || [];
   const storedForecast = JSON.parse(localStorage.getItem("forecastData"));
 
-  // Populate the dropdown and manage visibility
+  // Populate the city dropdown menu with the last searched cities
   populateDropdown(lastCities);
 
+  // Display the last forecasted data if available, otherwise fetch data for the last searched city
   if (lastCities.length > 0 && storedForecast) {
     displayData(storedForecast);
   } else if (lastCities.length > 0) {
     fetchWeatherData(lastCities[lastCities.length - 1]);
   }
 
+  // Event listener for the search button
   document.getElementById("search").addEventListener("click", (event) => {
     event.preventDefault();
     const cityName = document.getElementById("city_name").value.trim();
+    
+    // If a city name is entered, fetch the weather data
     if (cityName) {
       fetchWeatherData(cityName);
       updateLastCities(cityName);
@@ -46,8 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Event listener for the "Use Current Location" button
   document.getElementById("current").addEventListener("click", (event) => {
     event.preventDefault();
+    
+    // Check if geolocation is supported by the browser
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -67,10 +77,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Function to fetch weather data from the API
   async function fetchWeatherData(location) {
     try {
       const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=ea25262c8e5c4fefb9e72708240708&q=${location}&days=6`);
 
+      // Handle different HTTP response status codes
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error("City not found. Please check the city name and try again.");
@@ -81,11 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      // Parse the JSON data from the response
       const forecastData = await response.json();
       if (!forecastData || !forecastData.location || !forecastData.current) {
         throw new Error("Invalid data received from the server.");
       }
 
+      // Display the weather data and save it to local storage
       displayData(forecastData);
       localStorage.setItem("forecastData", JSON.stringify(forecastData));
 
@@ -95,17 +109,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Function to update the list of last searched cities in local storage
   function updateLastCities(city) {
     let lastCities = JSON.parse(localStorage.getItem("lastCities")) || [];
     if (!lastCities.includes(city)) {
       lastCities.push(city);
       if (lastCities.length > 5) {
-        lastCities.shift();
+        lastCities.shift(); // Keep only the last 5 cities
       }
       localStorage.setItem("lastCities", JSON.stringify(lastCities));
     }
   }
 
+  // Function to populate the city dropdown menu
   function populateDropdown(cities) {
     const dropdown = document.getElementById("city_dropdown");
     if (cities.length > 0) {
@@ -118,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dropdown.appendChild(option);
       });
 
+      // Event listener for when a city is selected from the dropdown
       dropdown.addEventListener("change", () => {
         const selectedCity = dropdown.value;
         if (selectedCity) {
@@ -129,33 +146,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Function to display weather data on the page
   function displayData(forecastData) {
     const weatherDisplay = document.getElementById("weather_display");
     const weatherInfo = `
-      <div class="bg-cyan-900 dark:bg-slate-800 p-6 min-w-fit rounded-lg m-6 md:m-10 flex flex-col gap-10 items-center hover:scale-110 ease-in duration-0 shadow-3xl hover:shadow-cyan-950 dark:hover:shadow-slate-100 outline outline-gray-400">
+      <div class="bg-cyan-900 dark:bg-slate-800 p-4 md:p-6 min-w-fit rounded-lg m-2 md:m-10 flex flex-col  gap-10 items-center md:hover:scale-110 ease-in duration-0 shadow-3xl hover:shadow-cyan-950 dark:hover:shadow-slate-100 outline outline-gray-400">
       <p class="text-sm text-white font-extrabold italic">
         ${forecastData.location.name}, ${forecastData.location.region}, ${forecastData.location.country}, ${forecastData.location.localtime}
       </p>
-      <div class="flex text-white gap-20">
+      <div class="flex text-white gap-5 md:gap-20">
         <div class="flex flex-col justify-evenly ">
-          <img width="80px" class="self-center animate-moveLeftRight" src="${forecastData.current.condition.icon}" alt="${forecastData.current.condition.text}" />
+          <img class="self-center animate-moveLeftRight w-14 md:w-20" src="${forecastData.current.condition.icon}" alt="${forecastData.current.condition.text}" />
           <p class="text-xs font-bold self-center italic">${forecastData.current.condition.text}</p>
         </div>
-        <p class="text-3xl font-extrabold self-center">${forecastData.current.temp_c}°C</p>
-        <div class="flex flex-col font-bold text-md self-center italic">
+        <p class=" text-xl md:text-3xl font-extrabold self-center">${forecastData.current.temp_c}°C</p>
+        <div class="flex flex-col font-bold text-sm md:text-md self-center italic">
           <p>Humidity: ${forecastData.current.humidity}%</p>
-          <p>Wind: ${forecastData.current.wind_kph} kph</p>
-          <p>Pressure: ${forecastData.current.pressure_mb} mb</p>
+          <p>Wind: ${forecastData.current.wind_kph}kph</p>
+          <p>Pressure: ${forecastData.current.pressure_mb}mb</p>
         </div>
       </div>
-      <div class="flex gap-10 text-xs text-white font-bold italic">
+      <div class="flex flex-wrap justify-evenly md:flex-row gap-3 md:gap-10 text-xs text-white font-bold italic">
         ${forecastData.forecast.forecastday.slice(1).map(day => {
           const date = new Date(day.date);
           const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
           return `
             <div class="forecast-day flex flex-col">
               <p class="self-center">${weekday}</p>
-              <img width="60px" class="self-center animate-moveLR" src="${day.day.condition.icon}" alt="${day.day.condition.text}" />
+              <img class="self-center animate-moveLR w-10 md:w-14" src="${day.day.condition.icon}" alt="${day.day.condition.text}" />
               <p>Temp: ${day.day.maxtemp_c}°C</p>
               <p>Humidity: ${day.day.avghumidity}%</p>
               <p>Wind: ${day.day.maxwind_kph} kph</p>
@@ -167,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
     weatherDisplay.innerHTML = weatherInfo;
   }
 
+  // Function to display error messages on the page
   function displayError(message) {
     const weatherDisplay = document.getElementById("weather_display");
     weatherDisplay.innerHTML = `

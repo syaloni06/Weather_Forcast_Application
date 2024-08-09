@@ -2,7 +2,7 @@
 module.exports = {
   darkMode: 'class', // Enable dark mode with class strategy
   content: [
-    './src/**/*.{html,js}', // Adjust this to your file structure
+    './index.html','./index.js', // Adjust this to your file structure
     './*.html', // Ensure it scans your HTML files
   ],
   theme: {
