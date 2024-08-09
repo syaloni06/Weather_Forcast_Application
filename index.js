@@ -44,13 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // If a city name is entered, fetch the weather data
     if (cityName) {
-      fetchWeatherData(cityName);
-      updateLastCities(cityName);
-      populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
-      document.getElementById("city_name").value = "";
+      fetchWeatherData(cityName).then((data) => {
+        if (data) {  // Proceed only if data is successfully fetched
+          updateLastCities(cityName);
+          populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
+          document.getElementById("city_name").value = "";
+        } else {
+          displayError("Failed to fetch weather data. Please try again.");
+        }
+      }).catch((error) => {
+        console.error("Unexpected error:", error);
+        displayError("An unexpected error occurred. Please try again.");
+      });
     } else {
       displayError("Please enter a city name.");
-    }
+    }    
   });
 
   // Event listener for the "Use Current Location" button
@@ -102,10 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Display the weather data and save it to local storage
       displayData(forecastData);
       localStorage.setItem("forecastData", JSON.stringify(forecastData));
-
+      return forecastData;
     } catch (error) {
       displayError(`Error fetching weather data: ${error.message}`);
       console.error(`Error in fetching data: ${error}`);
+      return null;
     }
   }
 
