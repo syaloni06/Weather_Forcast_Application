@@ -1,4 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const themeToggleButton = document.getElementById("theme-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+
+  // Check if dark mode is enabled
+  if (localStorage.getItem("theme") === "dark") {
+    document.documentElement.classList.add("dark");
+    themeIcon.classList.replace("fa-moon", "fa-sun");
+  }
+
+  themeToggleButton.addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
+
+    if (document.documentElement.classList.contains("dark")) {
+      localStorage.setItem("theme", "dark");
+      themeIcon.classList.replace("fa-moon", "fa-sun");
+    } else {
+      localStorage.setItem("theme", "light");
+      themeIcon.classList.replace("fa-sun", "fa-moon");
+    }
+  });
+
+  // Existing code for weather functionality
   const lastCities = JSON.parse(localStorage.getItem("lastCities")) || [];
   const storedForecast = JSON.parse(localStorage.getItem("forecastData"));
 
@@ -10,108 +32,107 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (lastCities.length > 0) {
     fetchWeatherData(lastCities[lastCities.length - 1]);
   }
-});
 
-document.getElementById("search").addEventListener("click", (event) => {
-  event.preventDefault();
-  const cityName = document.getElementById("city_name").value.trim();
-  if (cityName) {
-    fetchWeatherData(cityName);
-    updateLastCities(cityName);
-    populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
-  } else {
-    displayError("Please enter a city name.");
-  }
-});
-
-document.getElementById("current").addEventListener("click", (event) => {
-  event.preventDefault();
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const currentLocation = `${latitude},${longitude}`;
-        fetchWeatherData(currentLocation);
-        updateLastCities(currentLocation);
-        populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
-      },
-      (error) => {
-        displayError("Unable to retrieve your location.");
-        console.error(error);
-      }
-    );
-  } else {
-    displayError("Geolocation is not supported by your browser.");
-  }
-});
-
-async function fetchWeatherData(location) {
-  try {
-    const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=ea25262c8e5c4fefb9e72708240708&q=${location}&days=6`);
-    
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error("City not found. Please check the city name and try again.");
-      } else if (response.status === 401) {
-        throw new Error("Unauthorized request. Please check your API key.");
-      } else {
-        throw new Error(`Server error: ${response.status} ${response.statusText}. Please try again later.`);
-      }
+  document.getElementById("search").addEventListener("click", (event) => {
+    event.preventDefault();
+    const cityName = document.getElementById("city_name").value.trim();
+    if (cityName) {
+      fetchWeatherData(cityName);
+      updateLastCities(cityName);
+      populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
+      document.getElementById("city_name").value = "";
+    } else {
+      displayError("Please enter a city name.");
     }
+  });
 
-    const forecastData = await response.json();
-    if (!forecastData || !forecastData.location || !forecastData.current) {
-      throw new Error("Invalid data received from the server.");
+  document.getElementById("current").addEventListener("click", (event) => {
+    event.preventDefault();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const currentLocation = `${latitude},${longitude}`;
+          fetchWeatherData(currentLocation);
+          updateLastCities(currentLocation);
+          populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
+        },
+        (error) => {
+          displayError("Unable to retrieve your location.");
+          console.error(error);
+        }
+      );
+    } else {
+      displayError("Geolocation is not supported by your browser.");
     }
+  });
 
-    displayData(forecastData);
-    localStorage.setItem("forecastData", JSON.stringify(forecastData));
+  async function fetchWeatherData(location) {
+    try {
+      const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=ea25262c8e5c4fefb9e72708240708&q=${location}&days=6`);
 
-  } catch (error) {
-    displayError(`Error fetching weather data: ${error.message}`);
-    console.error(`Error in fetching data: ${error}`);
-  }
-}
-
-function updateLastCities(city) {
-  let lastCities = JSON.parse(localStorage.getItem("lastCities")) || [];
-  if (!lastCities.includes(city)) {
-    lastCities.push(city);
-    if (lastCities.length > 5) { // Keep the array limited to the last 5 cities
-      lastCities.shift();
-    }
-    localStorage.setItem("lastCities", JSON.stringify(lastCities));
-  }
-}
-
-function populateDropdown(cities) {
-  const dropdown = document.getElementById("city_dropdown");
-  if (cities.length > 0) {
-    dropdown.style.display = "block"; // Show dropdown
-    dropdown.innerHTML = '<option value="">Select a city</option>'; // Reset dropdown
-    cities.forEach(city => {
-      const option = document.createElement("option");
-      option.value = city;
-      option.textContent = city;
-      dropdown.appendChild(option);
-    });
-
-    // Add an event listener to fetch weather data when a city is selected
-    dropdown.addEventListener("change", (event) => {
-      const selectedCity = event.target.value;
-      if (selectedCity) {
-        fetchWeatherData(selectedCity); // Fetch data from API
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("City not found. Please check the city name and try again.");
+        } else if (response.status === 401) {
+          throw new Error("Unauthorized request. Please check your API key.");
+        } else {
+          throw new Error(`Server error: ${response.status} ${response.statusText}. Please try again later.`);
+        }
       }
-    });
-  } else {
-    dropdown.style.display = "none"; // Hide dropdown
-  }
-}
 
-function displayData(forecastData) {
-  const display = document.getElementById("weather_display");
-  display.innerHTML = `
-    <div class="bg-cyan-900 p-6 min-w-fit rounded-lg m-6 md:m-10 flex flex-col gap-10 items-center hover:scale-110 ease-in duration-0 shadow-3xl hover:shadow-cyan-950 outline outline-gray-400">
+      const forecastData = await response.json();
+      if (!forecastData || !forecastData.location || !forecastData.current) {
+        throw new Error("Invalid data received from the server.");
+      }
+
+      displayData(forecastData);
+      localStorage.setItem("forecastData", JSON.stringify(forecastData));
+
+    } catch (error) {
+      displayError(`Error fetching weather data: ${error.message}`);
+      console.error(`Error in fetching data: ${error}`);
+    }
+  }
+
+  function updateLastCities(city) {
+    let lastCities = JSON.parse(localStorage.getItem("lastCities")) || [];
+    if (!lastCities.includes(city)) {
+      lastCities.push(city);
+      if (lastCities.length > 5) {
+        lastCities.shift();
+      }
+      localStorage.setItem("lastCities", JSON.stringify(lastCities));
+    }
+  }
+
+  function populateDropdown(cities) {
+    const dropdown = document.getElementById("city_dropdown");
+    if (cities.length > 0) {
+      dropdown.style.display = "block";
+      dropdown.innerHTML = '<option value="">Select a city</option>';
+      cities.forEach(city => {
+        const option = document.createElement("option");
+        option.value = city;
+        option.textContent = city;
+        dropdown.appendChild(option);
+      });
+
+      dropdown.addEventListener("change", () => {
+        const selectedCity = dropdown.value;
+        if (selectedCity) {
+          fetchWeatherData(selectedCity);
+        }
+      });
+    } else {
+      dropdown.style.display = "none";
+    }
+  }
+
+  function displayData(forecastData) {
+    const weatherDisplay = document.getElementById("weather_display");
+    const weatherInfo = `
+      <div class="bg-cyan-900 dark:bg-slate-800 p-6 min-w-fit rounded-lg m-6 md:m-10 flex flex-col gap-10 items-center hover:scale-110 ease-in duration-0 shadow-3xl hover:shadow-cyan-950 dark:hover:shadow-slate-100 outline outline-gray-400">
       <p class="text-sm text-white font-extrabold italic">
         ${forecastData.location.name}, ${forecastData.location.region}, ${forecastData.location.country}, ${forecastData.location.localtime}
       </p>
@@ -141,13 +162,17 @@ function displayData(forecastData) {
             </div>`;
         }).join('')}
       </div>
-    </div>`;
-}
+    </div>
+    `;
+    weatherDisplay.innerHTML = weatherInfo;
+  }
 
-function displayError(errorMessage) {
-  const display = document.getElementById("weather_display");
-  display.innerHTML = `
-    <div class="bg-red-500 p-4 rounded-lg m-6 md:m-10 text-white text-center">
-      <p class="font-bold">${errorMessage}</p>
-    </div>`;
-}
+  function displayError(message) {
+    const weatherDisplay = document.getElementById("weather_display");
+    weatherDisplay.innerHTML = `
+      <div class="bg-red-200 text-red-800 p-4 rounded-lg">
+        ${message}
+      </div>
+    `;
+  }
+});

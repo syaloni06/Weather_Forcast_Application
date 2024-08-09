@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./index.html","./index.js"],
+  darkMode: 'class', // Enable dark mode with class strategy
+  content: [
+    './src/**/*.{html,js}', // Adjust this to your file structure
+    './*.html', // Ensure it scans your HTML files
+  ],
   theme: {
     extend: {
       boxShadow: {
