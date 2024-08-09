@@ -1,13 +1,12 @@
 ﻿# Weather_Forcast_Application
-# Introduction
 The Weather Forecast Application is a web-based tool that provides weather information for any city. It uses the WeatherAPI to fetch and display the current weather conditions and a forecast for the next six days. The application also supports light and dark themes and can remember the last searched cities.
-# Features
+## Features
 1. Fetch weather data for any city using WeatherAPI.
 2. Display current weather conditions and a six-day forecast.
 3. Light and dark theme toggle with the last used theme saved in local storage.
 4. Save and display the last five searched cities.
 5. Use the current location to fetch weather data.
-# Setup and Installation
+## Setup and Installation
 1. `Clone` the Repository
 ``` bash
 git clone https://github.com/syaloni06/Weather_Forcast_Application.git
@@ -50,7 +49,7 @@ npx tailwindcss -i ./src/input.css -o ./public/output.css --watch
 ```
 4. Run the Application
 5. Open the index.html file in your web browser.
-# Usage
+## Usage
 1. Search for a City - Enter the city name in the input field and click the "Search" button.
 2. Use Current Location - Click the "Use Current Location" button to fetch weather data for your current location.
 3. Theme Toggle - Click the moon/sun icon in the top-right corner to toggle between light and dark themes. The selected theme will be saved for future visits.
