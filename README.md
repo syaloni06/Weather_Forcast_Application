@@ -9,31 +9,45 @@ The Weather Forecast Application is a web-based tool that provides weather infor
 5. Use the current location to fetch weather data.
 # Setup and Installation
 1. Clone the Repository
-command- git clone https://github.com/syaloni06/Weather_Forcast_Application.git
+``` bash
+git clone https://github.com/syaloni06/Weather_Forcast_Application.git
 cd Weather_Forcast_Application
-3. Install Dependencies
+```
+2. Install Dependencies
 Ensure you have Node.js and npm installed.
-command- npm install
-4. Build Tailwind CSS
+``` bash
+npm install
+```
+3. Build Tailwind CSS
   a. Install tailwindcss via npm, and create your tailwind.config.js file.
+    ``` bash
     npm install -D tailwindcss
     npx tailwindcss init
+    ```
   b. Add the paths to all of your template files in your tailwind.config.js file.
-    module.exports = {
-    content: ["./src/**/*.{html,js}"],
-    theme: {
-      extend: {},
-    },
-    plugins: [],
-   }
+    ``` bash
+      module.exports = {
+      content: ["./src/**/*.{html,js}"],
+      theme: {
+        extend: {},
+      },
+      plugins: [],
+     }
+    ```
   c. Add the @tailwind directives for each of Tailwind’s layers to your main CSS file.
+    ``` bash
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
+    ```
   d. Run the CLI tool to scan your template files for classes and build your CSS.
+    ``` bash
      npx tailwindcss -i ./src/input.css -o ./public/output.css --watch
+     ```
   e. Add your compiled CSS file to the <head> and start using Tailwind’s utility classes to style your content.
+  ``` bash
      <link href="./output.css" rel="stylesheet">
+  ```
 4. Run the Application
 5. Open the index.html file in your web browser.
 # Usage
