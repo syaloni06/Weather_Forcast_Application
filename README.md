@@ -11,10 +11,10 @@ The Weather Forecast Application is a web-based tool that provides weather infor
 1. Clone the Repository
 command- git clone https://github.com/syaloni06/Weather_Forcast_Application.git
 cd Weather_Forcast_Application
-2. Install Dependencies
+3. Install Dependencies
 Ensure you have Node.js and npm installed.
 command- npm install
-3. Build Tailwind CSS
+4. Build Tailwind CSS
   a. Install tailwindcss via npm, and create your tailwind.config.js file.
     npm install -D tailwindcss
     npx tailwindcss init
@@ -34,8 +34,8 @@ command- npm install
      npx tailwindcss -i ./src/input.css -o ./public/output.css --watch
   e. Add your compiled CSS file to the <head> and start using Tailwind’s utility classes to style your content.
      <link href="./output.css" rel="stylesheet">
-4.Run the Application
-5.Open the index.html file in your web browser.
+4. Run the Application
+5. Open the index.html file in your web browser.
 # Usage
 1. Search for a City - Enter the city name in the input field and click the "Search" button.
 2. Use Current Location - Click the "Use Current Location" button to fetch weather data for your current location.
