@@ -24,18 +24,18 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Load the last searched cities and forecast data from local storage
-  const lastCities = JSON.parse(localStorage.getItem("lastCities")) || [];
-  const storedForecast = JSON.parse(localStorage.getItem("forecastData"));
+  const lastCities = JSON.parse(sessionStorage.getItem("lastCities")) || [];
+  // const storedForecast = JSON.parse(localStorage.getItem("forecastData"));
 
   // Populate the city dropdown menu with the last searched cities
   populateDropdown(lastCities);
 
   // Display the last forecasted data if available, otherwise fetch data for the last searched city
-  if (lastCities.length > 0 && storedForecast) {
-    displayData(storedForecast);
-  } else if (lastCities.length > 0) {
-    fetchWeatherData(lastCities[lastCities.length - 1]);
-  }
+  // if (lastCities.length > 0 && storedForecast) {
+  //   displayData(storedForecast);
+  // } else if (lastCities.length > 0) {
+  //   fetchWeatherData(lastCities[lastCities.length - 1]);
+  // }
 
   // Event listener for the search button
   document.getElementById("search").addEventListener("click", (event) => {
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fetchWeatherData(cityName).then((data) => {
         if (data) {  // Proceed only if data is successfully fetched
           updateLastCities(cityName);
-          populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
+          populateDropdown(JSON.parse(sessionStorage.getItem("lastCities")));
           document.getElementById("city_name").value = "";
         } else {
           displayError("Failed to fetch weather data. Please try again.");
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const currentLocation = `${latitude},${longitude}`;
           fetchWeatherData(currentLocation);
           updateLastCities(currentLocation);
-          populateDropdown(JSON.parse(localStorage.getItem("lastCities")));
+          populateDropdown(JSON.parse(sessionStorage.getItem("lastCities")));
         },
         (error) => {
           displayError("Unable to retrieve your location.");
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Display the weather data and save it to local storage
       displayData(forecastData);
-      localStorage.setItem("forecastData", JSON.stringify(forecastData));
+      // localStorage.setItem("forecastData", JSON.stringify(forecastData));
       return forecastData;
     } catch (error) {
       displayError(`Error fetching weather data: ${error.message}`);
@@ -120,13 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to update the list of last searched cities in local storage
   function updateLastCities(city) {
-    let lastCities = JSON.parse(localStorage.getItem("lastCities")) || [];
+    let lastCities = JSON.parse(sessionStorage.getItem("lastCities")) || [];
     if (!lastCities.includes(city)) {
       lastCities.push(city);
       if (lastCities.length > 5) {
         lastCities.shift(); // Keep only the last 5 cities
       }
-      localStorage.setItem("lastCities", JSON.stringify(lastCities));
+      sessionStorage.setItem("lastCities", JSON.stringify(lastCities));
     }
   }
 
