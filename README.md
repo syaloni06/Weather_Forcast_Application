@@ -45,7 +45,7 @@ npx tailwindcss -i ./src/input.css -o ./public/output.css --watch
 ```
 - Add your compiled CSS file to the `<head>` and start using Tailwind’s utility classes to style your content.
 ``` bash
-     <link href="./output.css" rel="stylesheet">
+<link href="./output.css" rel="stylesheet">
 ```
 4. Run the Application
 5. Open the index.html file in your web browser.
@@ -54,3 +54,5 @@ npx tailwindcss -i ./src/input.css -o ./public/output.css --watch
 2. Use Current Location - Click the "Use Current Location" button to fetch weather data for your current location.
 3. Theme Toggle - Click the moon/sun icon in the top-right corner to toggle between light and dark themes. The selected theme will be saved for future visits.
 4. View Last Searched Cities - The last five searched cities are saved and can be selected from a dropdown menu.
+## Project Demo
+https://github.com/user-attachments/assets/d0052b45-ea2f-479d-be20-2e909b40a149
