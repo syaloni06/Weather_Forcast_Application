@@ -85,4 +85,5 @@ npx tailwindcss -i ./input.css -o ./output.css --watch
 3. Theme Toggle - Click the moon/sun icon in the top-right corner to toggle between light and dark themes. The selected theme will be saved for future visits.
 4. View Last Searched Cities - The last five searched cities are saved and can be selected from a dropdown menu.
 ## Project Demo
+### Deployed link - https://syaloni06.github.io/Weather_Forcast_Application/
 https://github.com/user-attachments/assets/d0052b45-ea2f-479d-be20-2e909b40a149
