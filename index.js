@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to fetch weather data from the API
   async function fetchWeatherData(location) {
     try {
-      const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=ea25262c8e5c4fefb9e72708240708&q=${location}&days=6`);
+      const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=b7a9777512e54868ae681137241309&q=${location}&days=6`);
 
       // Handle different HTTP response status codes
       if (!response.ok) {
