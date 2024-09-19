@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </p>
       <div class="flex text-white gap-5 md:gap-20">
         <div class="flex flex-col justify-evenly ">
-          <img class="self-center animate-moveLeftRight w-14 md:w-20" src="${forecastData.current.condition.icon}" alt="${forecastData.current.condition.text}" />
+          <img class="self-center animate-moveLeftRight w-14 md:w-20" src="https://${forecastData.current.condition.icon}" alt="${forecastData.current.condition.text}" />
           <p class="text-xs font-bold self-center italic">${forecastData.current.condition.text}</p>
         </div>
         <p class=" text-xl md:text-3xl font-extrabold self-center">${forecastData.current.temp_c}°C</p>
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return `
             <div class="forecast-day flex flex-col">
               <p class="self-center">${weekday}</p>
-              <img class="self-center animate-moveLR w-10 md:w-14" src="${day.day.condition.icon}" alt="${day.day.condition.text}" />
+              <img class="self-center animate-moveLR w-10 md:w-14" src="https://${day.day.condition.icon}" alt="${day.day.condition.text}" />
               <p>Temp: ${day.day.maxtemp_c}°C</p>
               <p>Humidity: ${day.day.avghumidity}%</p>
               <p>Wind: ${day.day.maxwind_kph} kph</p>
